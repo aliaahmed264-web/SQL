@@ -1,0 +1,65 @@
+Display the patient ID and create a new column that calculates how much each patient still needs to pay. Call the new column payment_remaining.
+
+SELECT patient_id
+, procedure_bill - payment_received AS payment_remaining
+FROM billing;
+
+Select every patient ID, the procedure bill, and create a new column that calculates the fraction of what the patient has paid toward their procedure bill. 
+Call the new column payment_fraction and sort it from low to high.
+
+SELECT patient_id
+, procedure_bill
+, payment_received / procedure_bill AS payment_fraction
+FROM billing
+ORDER BY payment_fraction;
+
+
+Display the patient ID, payment_fraction (copy from the previous query),
+and add a column displaying the percent of the bill that the patient has paid, rounded to one place. 
+Call the new column payment_percent.
+
+SELECT patient_id
+, payment_received / procedure_bill AS payment_fraction
+, ROUND((payment_received / procedure_bill)*100, 1) AS payment_percent
+FROM billing;
+
+
+Using a CASE expression will enable us to create categories
+If someone has paid 100% of their bill, write "paid"
+If someone has paid 0%, write “no payment”
+If it’s something else (a value between 0 and 100), write “in progress”
+name the column payment_status
+
+SELECT patient_id
+, payment_received / procedure_bill AS payment_fraction
+, CASE
+WHEN (payment_received / procedure_bill) = 1 THEN "paid"
+WHEN (payment_received / procedure_bill) = 0 THEN "no payment"
+ELSE "in progress"
+END AS payment_status
+FROM billing
+;
+
+
+Alter the previous query to create more categories in payment_status.
+
+If someone has paid 100% of their bill, write "paid"
+if someone has paid 0%, write “no payment”
+If the patient has paid 75% or more, write "75%+".
+Do the same for 50% and 25%
+If the number is under 25%, write "Under 25%"
+name the column payment_status
+
+
+SELECT patient_id
+, payment_received / procedure_bill
+, CASE
+WHEN (payment_received / procedure_bill) = 1 THEN "paid"
+WHEN (payment_received / procedure_bill) = 0 THEN "no payment"
+WHEN (payment_received / procedure_bill) >= .75 THEN "75%+"
+WHEN (payment_received / procedure_bill) >= .5 THEN "50%+"
+WHEN (payment_received / procedure_bill) >= .25 THEN "25%+"
+ELSE "Under 25%"
+END AS payment_status
+FROM billing
+;
