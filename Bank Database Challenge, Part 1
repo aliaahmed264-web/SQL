@@ -1,0 +1,20 @@
+Write a query that selects the names of products in the table bank_products.
+ SELECT product_name
+FROM bank_products;
+
+Write another query that uses OR to show the product names that have a Checking or Savings product type.
+SELECT product_name
+FROM bank_products
+WHERE product_type = "Checking" OR product_type= "Savings";
+
+Write a query that shows the product name and interest rate for products with a "Savings"
+product type, an interest_rate greater than or equal to
+.75, and a monthly fee of 0
+
+SELECT product_name, interest_rate
+FROM bank_products
+WHERE product_type "Savings"
+AND interest_rate>=0.75
+ AND monthly_fee=0;
+
+
