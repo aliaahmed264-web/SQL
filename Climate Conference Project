@@ -1,0 +1,105 @@
+ #Come up with six questions based on the data and then answer them using SQL.
+
+
+#Write at least 6 different queries. Do each of the following at least once:
+
+LEFT table = hotels
+RIGHT table = reservations
+
+hotels is on the left because it comes immediately after FROM.
+reservations is on the right because it comes after LEFT JOIN
+
+#Analysis:
+
+#Left join;
+
+SELECT h.hotel_name,
+       v.association,
+       e.event_name
+FROM hotels h
+LEFT JOIN reservations r
+  ON h.hotel_id = r.hotel
+LEFT JOIN vips v
+  ON r.member_id = v.member_id
+LEFT JOIN events e
+  ON v.event = e.event_id;
+
+
+
+#Inner join;
+
+SELECT hotels.hotel_name,
+reservations.member_id
+FROM hotels
+INNER JOIN reservations
+ON hotels.hotel_id = reservations.hotel
+;
+
+
+
+#Multiple Joins;
+
+SELECT vips.member_id,
+       vips.first_name, vips.last_name,
+       hotels.hotel_name,
+       events.event_name,
+       events.event_type
+FROM vips
+INNER JOIN reservations
+  ON vips.member_id = reservations.member_id
+INNER JOIN hotels
+  ON reservations.hotel = hotels.hotel_id
+INNER JOIN events
+  ON vips.event = events.event_id
+;
+
+#SUBQUERY;
+
+List all VIPs who are staying at a hotel where at least one guest RSVP’d “yes” to the welcome party.
+
+SELECT vips.member_id,
+       vips.first_name,
+       vips.last_name,
+       hotels.hotel_name
+FROM vips
+JOIN reservations
+  ON vips.member_id = reservations.member_id
+JOIN hotels
+  ON reservations.hotel = hotels.hotel_id
+WHERE EXISTS (
+SELECT 1
+FROM reservations
+);
+
+
+#SELF JOIN ; 
+
+SELECT reviewer.member_id AS reviewer_id,
+       reviewer.first_name AS reviewer_first_name,
+       reviewer.last_name AS reviewer_last_name,
+       reviewee.member_id AS reviewee_id,
+       reviewee.first_name AS reviewee_first_name,
+       reviewee.last_name AS reviewee_last_name
+FROM vips AS reviewer
+JOIN vips AS reviewee
+ON reviewer.provides_feedback_to = reviewee.member_id
+ORDER BY reviewer.first_name, reviewer.last_name;
+
+
+#Write two queries of your choice:
+
+SELECT hotels.hotel_name,
+       COUNT(reservations.member_id) AS total_reservations,
+       SUM(reservations.welcome_rsvp) AS welcome_yes,
+       SUM(reservations.dinner_rsvp) AS dinner_yes
+FROM hotels
+;
+
+SELECT events.event_name,
+       events.event_type,
+       COUNT(vips.member_id) AS vip_count,
+       COUNT(DISTINCT vips.association) AS association_count
+FROM events
+LEFT JOIN vips
+  ON vips.event = events.event_id
+GROUP BY events.event_name, events.event_type;
