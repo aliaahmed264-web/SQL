@@ -1,0 +1,75 @@
+
+# Here are potential answers to the example questions in the final SQL project. 
+
+
+Analysis:
+
+
+ # Show Customers (their full names, customer ID, and country) who are not in the US.
+
+SELECT customers.firstname
+,customers.CustomerID,customers.LastName, customers.Country
+FROM chinook.customers 
+WHERE customers.Country NOT IN ('USA')
+;
+
+
+# Show only the Customers from Brazil.
+
+SELECT 
+  customers.FirstName,
+  customers.LastName,
+  customers.CustomerId,
+  customers.Country
+FROM chinook.customers 
+WHERE customers.Country = 'Brazil';
+
+
+#Find the Invoices of customers who are from Brazil. 
+The resulting table should show the customer's full name, Invoice ID, Date of the invoice, and billing country.
+
+SELECT
+  customers.FirstName || ' ' || customers.LastName AS FullName,
+  invoices.InvoiceId,
+  invoices.InvoiceDate,
+  invoices.BillingCountry
+FROM chinook.customers  
+JOIN invoices
+  ON customers.CustomerId = invoices.CustomerId
+WHERE customers.Country = 'Brazil';
+
+
+#Show the Employees who are Sales Agents.
+
+SELECT
+  employees.EmployeeId,
+  employees.FirstName,
+  employees.LastName,
+  employees.Title
+FROM chinook.Employees emp 
+WHERE employees.Title = 'Sales Support Agent';
+
+
+
+#Find a unique/distinct list of billing countries from the Invoice table.
+
+
+SELECT DISTINCT invoices.BillingCountry
+FROM chinook.Invoices
+ORDER BY invoices.BillingCountry;
+
+#Provide a query that shows the invoices associated with each sales agent. 
+The resulting table should include the Sales Agent's full name.
+
+SELECT
+  employees.FirstName || ' ' || employees.LastName AS SalesAgent,
+  invoices.InvoiceId,
+  invoices.InvoiceDate,
+  invoices.Total
+FROM employees
+JOIN customers
+  ON customers.SupportRepId = employees.EmployeeId
+JOIN chinook.Employees emp 
+  ON invoices.CustomerId = customers.CustomerId
+WHERE employees.Title = 'Sales Support Agent'
+ORDER BY SalesAgent, invoices.InvoiceId;
